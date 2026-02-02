@@ -1,40 +1,430 @@
 import {Elysia} from "elysia";
 import {html, Html} from "@elysiajs/html";
 
+function nowUTC() {
+    // YYYY-MM-DD HH:mm:ss UTC
+    const d = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(
+        d.getUTCHours()
+    )}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+}
+
+function rayId16() {
+    const bytes = crypto.getRandomValues(new Uint8Array(8));
+    let out = "";
+    for (let i = 0; i < bytes.length; i++) {
+        out += bytes[i].toString(16).padStart(2, "0");
+    }
+    return out;
+}
+
 const app = new Elysia()
-    .use(html()) // เรียกใช้งาน Plugin
-    .get("/", () => (
-        <html lang="en">
-        <head>
-            <title>Welcome to Elysia</title>
-            <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body
-            class="bg-gradient-to-br from-indigo-900 via-slate-900 to-black flex items-center justify-center h-screen text-white">
-        <div class="text-center group">
-            <div class="text-8xl mb-6 animate-bounce">🦊</div>
-            <h1 class="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mb-4">
-                Elysia HTML Plugin
-            </h1>
-            <p class="text-slate-400 text-xl mb-8">
-                Rendering HTML with JSX is now seamless.
-            </p>
-            <div class="flex gap-4 justify-center">
-                <button
-                    class="bg-white text-slate-900 px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform">
-                    Get Started
-                </button>
-                <button
-                    class="border border-slate-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">
-                    Github
-                </button>
-            </div>
-        </div>
-        </body>
-        </html>
-    ))
+    .use(html())
+
+    .get("/", ({ request }) => {
+        const url = new URL(request.url);
+        const host = url.host || "example.com";
+
+        // ปรับ “ความกวน” ตรงนี้
+        const pageTitle = "500: Catastrophic infrastructure failure";
+        const headline = "Catastrophic infrastructure failure";
+        const errorCode = "500";
+        const tagline = (
+            <>
+                Visit{" "}
+                <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer">
+                    cloudflare.com
+                </a>{" "}
+                for no help at all.
+            </>
+        );
+
+        const youStatusLabel = "Out of Memory";
+        const cfColLabel = "Everywhere";
+        const hostStatusLabel = "On Fire";
+
+        const whatHappened = "There is a catastrophic failure.";
+        const whatCanIDo = "Please try again in a few years.";
+
+        const timestamp = nowUTC();
+        const ray = rayId16();
+
+        // จะโชว์ IP จริง/ปลอมก็ได้:
+        // - ปลอม: ใส่อะไรขำๆ
+        const fakeIp = "2405:9800:dead:beef:c0de:80d1:e1ca:aff3";
+        // - ถ้าจะลอง “เดา” จาก header (อาจไม่ชัวร์หลัง proxy):
+        // const realishIp =
+        //   request.headers.get("cf-connecting-ip") ||
+        //   request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        //   "127.0.0.1";
+
+        return (
+            <>
+                {"<!DOCTYPE html>"}
+                <html class="no-js" lang="en-US">
+                <head>
+                    <title>{pageTitle}</title>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+                    <meta name="robots" content="noindex, nofollow" />
+                    <meta name="viewport" content="width=device-width,initial-scale=1" />
+                    <link
+                        rel="icon"
+                        href="https://virt.moe/cferr/editor/assets/icon-error-32x32.png"
+                        type="image/png"
+                    />
+
+                    {/* OG/Twitter (คงเดิมหรือแก้ได้) */}
+                    <meta property="og:type" content="website" />
+                    <meta property="og:site_name" content="moe::virt" />
+                    <meta property="og:title" content={pageTitle} />
+                    <meta property="og:url" content="https://virt.moe/cferr/examples/catastrophic" />
+                    <meta property="og:description" content="There is a catastrophic failure." />
+                    <meta
+                        property="og:image"
+                        content="https://virt.moe/cferr/editor/assets/icon-error-large-white.png"
+                    />
+                    <meta property="twitter:card" content="summary" />
+                    <meta property="twitter:site" content="moe::virt" />
+                    <meta property="twitter:title" content={pageTitle} />
+                    <meta property="twitter:description" content="There is a catastrophic failure." />
+                    <meta
+                        property="twitter:image"
+                        content="https://virt.moe/cferr/editor/assets/icon-error-large-white.png"
+                    />
+
+                    {/* เอา style เดิมมาทั้งก้อน เพื่อให้เหมือน */}
+                    <style>{`
+${/* === PASTE YOUR ORIGINAL <style> HERE (unchanged) === */ ""}
+
+.container { width:100% }
+.bg-white { --bg-opacity: 1; background-color: #fff; background-color:rgba(255, 255, 255, var(--bg-opacity)) }
+.bg-center { background-position:50% }
+.bg-no-repeat { background-repeat:no-repeat }
+.border-gray-300 { --border-opacity: 1; border-color: #ebebeb; border-color:rgba(235, 235, 235, var(--border-opacity)) }
+.rounded { border-radius:.25rem }
+.border-solid { border-style:solid }
+.border-0 { border-width:0 }
+.border { border-width:1px }
+.border-t { border-top-width:1px }
+.cursor-pointer { cursor:pointer }
+.block { display:block }
+.inline-block { display:inline-block }
+.table { display:table }
+.hidden { display:none }
+.float-left { float:left }
+.clearfix:after { content: ""; display: table; clear:both }
+.font-mono { font-family:monaco, courier, monospace }
+.font-light { font-weight:300 }
+.font-normal { font-weight:400 }
+.font-semibold { font-weight:600 }
+.h-12 { height:3rem }
+.h-20 { height:5rem }
+.text-13 { font-size:13px }
+.text-15 { font-size:15px }
+.text-60 { font-size:60px }
+.text-2xl { font-size:1.5rem }
+.text-3xl { font-size:1.875rem }
+.leading-tight { line-height:1.25 }
+.leading-normal { line-height:1.5 }
+.leading-relaxed { line-height:1.625 }
+.leading-1\\.3 { line-height:1.3 }
+.my-8 { margin-top: 2rem; margin-bottom:2rem }
+.mx-auto { margin-left: auto; margin-right:auto }
+.mr-2 { margin-right:.5rem }
+.mb-2 { margin-bottom:.5rem }
+.mt-3 { margin-top:.75rem }
+.mb-4 { margin-bottom:1rem }
+.ml-4 { margin-left:1rem }
+.mt-6 { margin-top:1.5rem }
+.mb-6 { margin-bottom:1.5rem }
+.mb-8 { margin-bottom:2rem }
+.mb-10 { margin-bottom:2.5rem }
+.ml-10 { margin-left:2.5rem }
+.mb-15 { margin-bottom:3.75rem }
+.-ml-6 { margin-left:-1.5rem }
+.overflow-hidden { overflow:hidden }
+.p-0 { padding:0 }
+.py-2 { padding-top: .5rem; padding-bottom:.5rem }
+.px-4 { padding-left: 1rem; padding-right:1rem }
+.py-8 { padding-top: 2rem; padding-bottom:2rem }
+.py-10 { padding-top: 2.5rem; padding-bottom:2.5rem }
+.py-15 { padding-top: 3.75rem; padding-bottom:3.75rem }
+.pr-6 { padding-right:1.5rem }
+.pt-10 { padding-top:2.5rem }
+.absolute { position:absolute }
+.relative { position:relative }
+.left-1\\/2 { left:50% }
+.-bottom-4 { bottom:-1rem }
+.resize { resize:both }
+.text-center { text-align:center }
+.text-black-dark { --text-opacity: 1; color: #404040; color:rgba(64, 64, 64, var(--text-opacity)) }
+.text-gray-600 { --text-opacity: 1; color: #999; color:rgba(153, 153, 153, var(--text-opacity)) }
+.text-red-error { --text-opacity: 1; color: #bd2426; color:rgba(189, 36, 38, var(--text-opacity)) }
+.text-green-success { --text-opacity: 1; color: #9bca3e; color:rgba(155, 202, 62, var(--text-opacity)) }
+.antialiased { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing:grayscale }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space:nowrap }
+.w-12 { width:3rem }
+.w-240 { width:60rem }
+.w-1\\/2 { width:50% }
+.w-1\\/3 { width:33.333333% }
+.w-full { width:100% }
+.transition { -webkit-transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform; transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform; transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform; transition-property:background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform }
+
+body, html { --text-opacity: 1; color: #404040; color: rgba(64, 64, 64, var(--text-opacity)); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; font-size:16px }
+*, body, html { margin: 0; padding:0 }
+* { box-sizing:border-box }
+
+a { --text-opacity: 1; color: #2f7bbf; color: rgba(47, 123, 191, var(--text-opacity)); text-decoration: none; -webkit-transition-property: all; transition-property: all; -webkit-transition-duration: .15s; transition-duration: .15s; -webkit-transition-timing-function: cubic-bezier(0, 0, .2, 1); transition-timing-function:cubic-bezier(0, 0, .2, 1) }
+a:hover { --text-opacity: 1; color: #f68b1f; color:rgba(246, 139, 31, var(--text-opacity)) }
+img { display: block; width: 100%; height:auto }
+
+#what-happened-section p { font-size: 15px; line-height:1.5 }
+strong { font-weight:600 }
+.bg-gradient-gray { background-image:-webkit-linear-gradient(top, #dedede, #ebebeb 3%, #ebebeb 97%, #dedede) }
+
+.cf-error-source:after {
+  position: absolute;
+  --bg-opacity: 1;
+  background-color: #fff;
+  background-color: rgba(255, 255, 255, var(--bg-opacity));
+  width: 2.5rem;
+  height: 2.5rem;
+  --transform-rotate: 45deg;
+  content: "";
+  bottom: -1.75rem;
+  left: 50%;
+  margin-left: -1.25rem;
+  box-shadow:0 0 4px 4px #dedede;
+  transform: rotate(var(--transform-rotate));
+}
+@media screen and (max-width: 720px) { .cf-error-source:after { display:none } }
+
+.cf-icon-browser { background-image: url(data:image/svg+xml;utf8,${encodeURIComponent(
+                        `<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80.7362"><path d="M89.8358.1636H10.1642C4.6398.1636.1614,4.6421.1614,10.1664v60.4033c0,5.5244,4.4784,10.0028,10.0028,10.0028h79.6716c5.5244,0,10.0027-4.4784,10.0027-10.0028V10.1664c0-5.5244-4.4784-10.0028-10.0027-10.0028ZM22.8323,9.6103c1.9618,0,3.5522,1.5903,3.5522,3.5521s-1.5904,3.5522-3.5522,3.5522-3.5521-1.5904-3.5521-3.5522,1.5903-3.5521,3.5521-3.5521ZM12.8936,9.6103c1.9618,0,3.5522,1.5903,3.5522,3.5521s-1.5904,3.5522-3.5522,3.5522-3.5521-1.5904-3.5521-3.5522,1.5903-3.5521,3.5521-3.5521ZM89.8293,70.137H9.7312V24.1983h80.0981v45.9387ZM89.8293,16.1619H29.8524v-5.999h59.977v5.999Z" style="fill:#999;"/></svg>`
+                    )}) }
+.cf-icon-cloud { background-image: url(data:image/svg+xml;utf8,${encodeURIComponent(
+                        `<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 78.9141"><path d="M132.2996,77.9927v-.0261c10.5477-.2357,19.0305-8.8754,19.0305-19.52,0-10.7928-8.7161-19.5422-19.4678-19.5422-2.9027,0-5.6471.6553-8.1216,1.7987C123.3261,18.6624,105.3419.9198,83.202.9198c-17.8255,0-32.9539,11.5047-38.3939,27.4899-3.0292-2.2755-6.7818-3.6403-10.8622-3.6403-10.0098,0-18.1243,8.1145-18.1243,18.1243,0,1.7331.258,3.4033.7122,4.9905-.2899-.0168-.5769-.0442-.871-.0442-8.2805,0-14.993,6.7503-14.993,15.0772,0,8.2795,6.6381,14.994,14.8536,15.0701v.0054h.1069c.0109,0,.0215.0016.0325.0016s.0215-.0016.0325-.0016" style="fill:#999;"/></svg>`
+                    )}) }
+.cf-icon-server { background-image: url(data:image/svg+xml;utf8,${encodeURIComponent(
+                        `<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 75"><path d="M94.0103,45.0775l-12.9885-38.4986c-1.2828-3.8024-4.8488-6.3624-8.8618-6.3619l-49.91.0065c-3.9995.0005-7.556,2.5446-8.8483,6.3295L1.0128,42.8363c-.3315.971-.501,1.9899-.5016,3.0159l-.0121,19.5737c-.0032,5.1667,4.1844,9.3569,9.3513,9.3569h75.2994c5.1646,0,9.3512-4.1866,9.3512-9.3512v-17.3649c0-1.0165-.1657-2.0262-.4907-2.9893ZM86.7988,65.3097c0,1.2909-1.0465,2.3374-2.3374,2.3374H9.9767c-1.2909,0-2.3374-1.0465-2.3374-2.3374v-18.1288c0-1.2909,1.0465-2.3374,2.3374-2.3374h74.4847c1.2909,0,2.3374,1.0465,2.3374,2.3374v18.1288Z" style="fill:#999;"/><circle cx="74.6349" cy="56.1889" r="4.7318" style="fill:#999;"/><circle cx="59.1472" cy="56.1889" r="4.7318" style="fill:#999;"/></svg>`
+                    )}) }
+.cf-icon-error { background-image: url(data:image/svg+xml;utf8,${encodeURIComponent(
+                        `<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.9145 47.9641"><circle cx="23.9572" cy="23.982" r="23.4815" style="fill:#bd2426;"/><line x1="19.0487" y1="19.0768" x2="27.8154" y2="28.8853" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:3px;"/><line x1="27.8154" y1="19.0768" x2="19.0487" y2="28.8853" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:3px;"/></svg>`
+                    )}) }
+
+.cf-error-footer .cf-footer-ip-reveal-btn {
+  appearance: button;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: #0051c3;
+  transition: color .15s ease;
+}
+.cf-error-footer .cf-footer-ip-reveal-btn:hover { color:#ee730a }
+
+.code-label {
+  background-color: #d9d9d9;
+  color: #313131;
+  font-weight: 500;
+  border-radius: 1.25rem;
+  font-size: .75rem;
+  line-height: 4.5rem;
+  padding: .25rem .5rem;
+  height: 4.5rem;
+  white-space: nowrap;
+  vertical-align:middle;
+}
+
+@media (max-width: 639px) {
+  .sm\\:block { display:block }
+  .sm\\:hidden { display:none }
+  .sm\\:mb-1 { margin-bottom:.25rem }
+  .sm\\:mb-2 { margin-bottom:.5rem }
+  .sm\\:py-4 { padding-top: 1rem; padding-bottom:1rem }
+  .sm\\:px-8 { padding-left: 2rem; padding-right:2rem }
+  .sm\\:text-left { text-align:left }
+}
+@media (max-width: 720px) {
+  .md\\:border-gray-400 { --border-opacity: 1; border-color: #dedede; border-color:rgba(222, 222, 222, var(--border-opacity)) }
+  .md\\:border-solid { border-style:solid }
+  .md\\:border-0 { border-width:0 }
+  .md\\:border-b { border-bottom-width:1px }
+  .md\\:block { display:block }
+  .md\\:inline-block { display:inline-block }
+  .md\\:hidden { display:none }
+  .md\\:float-none { float:none }
+  .md\\:text-3xl { font-size:1.875rem }
+  .md\\:m-0 { margin:0 }
+  .md\\:mt-0 { margin-top:0 }
+  .md\\:mb-2 { margin-bottom:.5rem }
+  .md\\:p-0 { padding:0 }
+  .md\\:py-8 { padding-top: 2rem; padding-bottom:2rem }
+  .md\\:px-8 { padding-left: 2rem; padding-right:2rem }
+  .md\\:pr-0 { padding-right:0 }
+  .md\\:pb-10 { padding-bottom:2.5rem }
+  .md\\:top-0 { top:0 }
+  .md\\:right-0 { right:0 }
+  .md\\:left-auto { left:auto }
+  .md\\:text-left { text-align:left }
+  .md\\:w-full { width:100% }
+}
+@media (max-width: 1023px) {
+  .lg\\:text-sm { font-size:.875rem }
+  .lg\\:text-2xl { font-size:1.5rem }
+  .lg\\:text-4xl { font-size:2.25rem }
+  .lg\\:leading-relaxed { line-height:1.625 }
+  .lg\\:px-8 { padding-left: 2rem; padding-right:2rem }
+  .lg\\:pt-6 { padding-top:1.5rem }
+  .lg\\:w-full { width: 100% }
+}
+            `}</style>
+                </head>
+
+                <body>
+                <div id="cf-wrapper">
+                    <div id="cf-error-details" class="p-0">
+                        <header class="mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-8">
+                            <h1 class="inline-block sm:block sm:mb-2 font-light text-60 lg:text-4xl text-black-dark leading-tight mr-2">
+                                <span class="inline-block">{headline}</span>{" "}
+                                <span class="code-label">Error code {errorCode}</span>
+                            </h1>
+                            <div>{tagline}</div>
+                            <div class="mt-3">{timestamp}</div>
+                        </header>
+
+                        <div class="my-8 bg-gradient-gray">
+                            <div class="w-240 lg:w-full mx-auto">
+                                <div class="clearfix md:px-8">
+                                    <div
+                                        id="cf-browser-status"
+                                        class="relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center"
+                                    >
+                                        <div class="relative mb-10 md:m-0">
+                                            <span class="cf-icon-browser block md:hidden h-20 bg-center bg-no-repeat"></span>
+                                            <span class="cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+                                        </div>
+                                        <span class="md:block w-full truncate">You</span>
+                                        <h3 class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3">
+                                            Browser
+                                        </h3>{" "}
+                                        <span class="leading-1.3 text-2xl" style="color:#bd2426">
+                          {youStatusLabel}
+                        </span>
+                                    </div>
+
+                                    <div
+                                        id="cf-cloudflare-status"
+                                        class="cf-error-source relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center"
+                                    >
+                                        <div class="relative mb-10 md:m-0">
+                                            <span class="cf-icon-cloud block md:hidden h-20 bg-center bg-no-repeat"></span>
+                                            <span class="cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+                                        </div>
+                                        <span class="md:block w-full truncate">{cfColLabel}</span>
+                                        <h3
+                                            class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3"
+                                            style="color:#2f7bbf"
+                                        >
+                                            Cloudflare
+                                        </h3>{" "}
+                                        <span class="leading-1.3 text-2xl" style="color:#bd2426">
+                          Error
+                        </span>
+                                    </div>
+
+                                    <div
+                                        id="cf-host-status"
+                                        class="relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center"
+                                    >
+                                        <div class="relative mb-10 md:m-0">
+                                            <span class="cf-icon-server block md:hidden h-20 bg-center bg-no-repeat"></span>
+                                            <span class="cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+                                        </div>
+                                        <span class="md:block w-full truncate">{host}</span>
+                                        <h3 class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3">
+                                            Host
+                                        </h3>{" "}
+                                        <span class="leading-1.3 text-2xl" style="color:#bd2426">
+                          {hostStatusLabel}
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-240 lg:w-full mx-auto mb-8 lg:px-8">
+                            <div class="clearfix">
+                                <div class="w-1/2 md:w-full float-left pr-6 md:pb-10 md:pr-0 leading-relaxed">
+                                    <h2 class="text-3xl font-normal leading-1.3 mb-4">What happened?</h2>
+                                    <p>{whatHappened}</p>
+                                </div>
+                                <div class="w-1/2 md:w-full float-left leading-relaxed">
+                                    <h2 class="text-3xl font-normal leading-1.3 mb-4">What can I do?</h2>
+                                    <p>{whatCanIDo}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
+                            <p class="text-13">
+                    <span class="cf-footer-item sm:block sm:mb-1">
+                      Ray ID: <strong class="font-semibold">{ray}</strong>
+                    </span>{" "}
+                                <span class="cf-footer-separator sm:hidden">&bull;</span>{" "}
+                                <span id="cf-footer-item-ip" class="cf-footer-item hidden sm:block sm:mb-1">
+                      Your IP:{" "}
+                                    <button type="button" id="cf-footer-ip-reveal" class="cf-footer-ip-reveal-btn">
+                        Click to reveal
+                      </button>
+                      <span class="hidden" id="cf-footer-ip">
+                        {fakeIp}
+                      </span>{" "}
+                                    <span class="cf-footer-separator sm:hidden">&bull;</span>
+                    </span>
+                                <span class="cf-footer-item sm:block sm:mb-1">
+                      <span>Performance &amp; security by</span>{" "}
+                                    <a
+                                        rel="noopener noreferrer"
+                                        href="https://www.cloudflare.com/"
+                                        id="brand_link"
+                                        target="_blank"
+                                    >
+                        Cloudflare
+                      </a>
+                    </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* reveal IP script (ของเดิม) */}
+                <script>{`
+(function() {
+  function d() {
+    var a = document;
+    var b = a.getElementById("cf-footer-item-ip"),
+        c = a.getElementById("cf-footer-ip-reveal");
+    b && "classList" in b && (b.classList.remove("hidden"), c.addEventListener("click", function() {
+      c.classList.add("hidden");
+      a.getElementById("cf-footer-ip").classList.remove("hidden")
+    }))
+  }
+  var a = document;
+  document.addEventListener && a.addEventListener("DOMContentLoaded", d)
+})();
+            `}</script>
+                </body>
+                </html>
+            </>
+        );
+    })
+
     .listen(3333);
 
-console.log(
-    `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
-);
+console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
